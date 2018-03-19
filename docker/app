@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -e -u
+
+ROOT_PATH="$(cd "$(dirname "$0")/../"; pwd)"
+
+if [ -f "$ROOT_PATH/docker/.env" ]; then
+    . "$ROOT_PATH/docker/.env"
+fi
+
+IMAGE="oipa/backend:${OIPA_BACKEND_IMAGE_VERSION:-1.0}"
+MOUNT_FOLDER="$ROOT_PATH/src"
+
+function usage() {
+    echo "$0 start|stop|exec|php|status|psysh"
+}
+
+function start() {
+    if [ ! "$(docker ps | grep oipa-backend)" ]; then
+        docker run -v "$MOUNT_FOLDER:/app/src" --rm -d -p "${OIPA_PUBLISHED_PORT:-80}":80 --name oipa-backend "$IMAGE" > /dev/null
+    fi
+}
+
+action="${1:-php}"
+
+shift
+
+case "$action" in
+
+    "start")
+        start;
+        ;;
+
+    "stop")
+        [ "$(docker ps | grep oipa-backend)" ] && docker stop oipa-backend > /dev/null
+        ;;
+
+    "status")
+        if [ "$(docker ps | grep oipa-backend)" ]; then
+            echo "Application is running";
+        else
+            echo "Application is not running";
+        fi
+        ;;
+
+    "exec")
+        start;
+        [ "$(docker ps | grep oipa-backend)" ] && docker exec -it oipa-backend "$@"
+        ;;
+
+    "php")
+        start;
+        [ "$(docker ps | grep oipa-backend)" ] && docker exec -it oipa-backend php "$@"
+        ;;
+
+    "psysh")
+        start;
+        [ "$(docker ps | grep oipa-backend)" ] && docker exec -it oipa-backend psysh "$@"
+        ;;
+
+    *)
+        usage;
+
+        exit 1;
+        ;;
+esac
