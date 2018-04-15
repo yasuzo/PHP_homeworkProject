@@ -36,7 +36,7 @@ function zbroji(string $ulaz): int {
             return -1;
     }
 
-    // ocisti se od notacije eksponentom
+    // ciscenje od notacije eksponentom
     $ulaz = (string)(int)$ulaz;
     $sum = 0;
     for($i = 0; $i < mb_strlen($ulaz); $i++){
