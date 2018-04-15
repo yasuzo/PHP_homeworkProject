@@ -29,7 +29,7 @@ function ponavljanje(string $ulaz, string $trazi, string ...$broji): int {
 
 function zbroji(string $ulaz): int {
     // ako je broj negativan ili nije cijeli, vraća error
-    if((int)$ulaz < 0 || $ulaz != (int)$ulaz)
+    if((int)$ulaz < 0 || $ulaz != (int)$ulaz || empty($ulaz))
         return -1;
 
     $sum = 0;
@@ -44,6 +44,7 @@ function zbroji(string $ulaz): int {
 
 function transformiraj(string $ulaz): ?string {
     $ulaz = htmlentities($ulaz);
+    $izlaz = "";
 
     $flags = ['strong' => false, 'em' => false, 'u' => false];
 
@@ -71,7 +72,7 @@ function transformiraj(string $ulaz): ?string {
         }
     }
     
-    if(in_array(true, $flags, true));
+    if(in_array(true, $flags, true))
         return null;
 
     return $izlaz;
