@@ -13,6 +13,8 @@ function ponavljanje(string $ulaz, string $trazi, string ...$broji): int {
     $ulaz = mb_strtolower($ulaz);
     $trazi = mb_strtolower($trazi);
 
+    $length_ulaz = mb_strlen($ulaz);
+
     // uzima string prije znaka $trazi
     list($ulaz) = explode($trazi, $ulaz, 2);
 
@@ -24,13 +26,17 @@ function ponavljanje(string $ulaz, string $trazi, string ...$broji): int {
 
         $count += mb_substr_count($ulaz, mb_strtolower($element));
     }
+
+    // ako se $trazi ne nalazi u nizu baca 0
+    if(mb_strlen($ulaz) === $length_ulaz)
+        return 0;
+
     return $count;
 }
 
 function zbroji(string $ulaz): int {
-    // ako je broj negativan ili nije cijeli, vraća error
     // ako je $ulaz prazan, vraća error
-    if((int)$ulaz < 0 || $ulaz != (int)$ulaz || empty($ulaz))
+    if(empty($ulaz))
         return -1;
 
     $sum = 0;
@@ -47,35 +53,43 @@ function transformiraj(string $ulaz): ?string {
     $ulaz = htmlentities($ulaz);
     $izlaz = "";
 
-    $flags = ['strong' => false, 'em' => false, 'u' => false];
+    $stack = [];
 
     for($i = 0; isset($ulaz[$i]); $i++){
-        if($ulaz[$i] === '#'){
-            if(!$flags['strong'])
-                $izlaz .= "<strong>";
-            else 
-                $izlaz .= "</strong>";
-            $flags['strong'] = !$flags['strong'];
-        }else if($ulaz[$i] === '*'){
-            if(!$flags['em'])
-                $izlaz .= "<em>";
-            else 
-                $izlaz .= "</em>";
-            $flags['em'] = !$flags['em'];
-        }else if($ulaz[$i] === "'"){
-            if(!$flags['u'])
-                $izlaz .= "<u>";
-            else 
-                $izlaz .= "</u>";
-            $flags['u'] = !$flags['u'];
-        }else{
-            $izlaz .= $ulaz[$i];
+        switch($ulaz[$i]){
+            case '#':
+                if(!in_array('strong', $stack)){
+                    $stack[] = 'strong';
+                    $izlaz .= "<strong>";
+                }else if(array_pop($stack) === 'strong')
+                    $izlaz .= "</strong>";
+                else
+                    return null;
+                break;
+            case '*':
+                if(!in_array('em', $stack)){
+                    $stack[] = 'em';
+                    $izlaz .= "<em>";
+                }else if(array_pop($stack) === 'em')
+                    $izlaz .= "</em>";
+                else
+                    return null;
+                break;
+            case '\'':
+                if(!in_array('u', $stack)){
+                    $stack[] = 'u';
+                    $izlaz .= "<u>";
+                }else if(array_pop($stack) === 'u')
+                    $izlaz .= "</u>";
+                else
+                    return null;
+                break;
+            default:
+                $izlaz .= $ulaz[$i];
         }
     }
-    
-    if(in_array(true, $flags, true))
+    if(!empty($stack))
         return null;
-
     return $izlaz;
 }
 
