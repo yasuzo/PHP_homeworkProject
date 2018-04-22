@@ -13,9 +13,9 @@ if(isset($_GET['submitButton'])){
             send_message($rez);
             $show = false;
         }else if(empty($ulaz))
-            send_message("Greska - ulazni broj je prazan!");
+            send_message("Greska - ulazni parametar je prazan!");
         else
-            send_message("Greska - unos nije validan broj!");
+            send_message("Greska - broj mora biti >= 0 i cijeli, bez ikakvih posebnih znakova!");
     }
 }
 ?>
@@ -25,6 +25,6 @@ if(isset($_GET['submitButton'])){
     <label>Broj
         <input type="text" name="ulaz" value="<?= safe($ulaz) ?>">
     </label>
-    <input type="submit" value="" name="submitButton">
+    <input type="submit" value="send" name="submitButton">
 </form>
 <?php endif; ?> 

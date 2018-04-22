@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             if(($data=file_get_contents($file['name'])) === false)
                 send_message("Greska - nije moguće pročitati sadržaj datoteke!");
             else if(($data = transformiraj($data)) === null)
-                send_message("Greska - datoteka sadrži nezatvorene tagove!");
+                send_message("Greska - svi tagovi u datoteci moraju biti zatvoreni i moraju se zatvarati suprotno od onoga kako su se otvarali!");
             else if(($file = file_put_contents('transformirani.html', $data)) === false)
                 send_message("Greska - nije moguce stvoriti novu datoteku!");
             else{
