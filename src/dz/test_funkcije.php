@@ -1,8 +1,6 @@
 <?php
 require_once 'funkcije.php';
 
-echo "OVO JE U BRANCHU mod-funkcije<br>";
-
 // ponavljanje()
 
 echo ponavljanje("abcdefhij", "c", "a", "h").'<br>';
