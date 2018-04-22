@@ -55,3 +55,5 @@ if(isset($_GET['submitButton'])){
 </form>
 
 <?php endif; ?>
+
+<a href="index.php">&lt;Povratak</a>

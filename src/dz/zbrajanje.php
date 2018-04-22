@@ -27,4 +27,6 @@ if(isset($_GET['submitButton'])){
     </label>
     <input type="submit" value="send" name="submitButton">
 </form>
-<?php endif; ?> 
+<?php endif; ?>
+
+<a href="index.php">&lt;Povratak</a>
