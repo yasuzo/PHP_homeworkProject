@@ -3,6 +3,9 @@
 require_once "helper_functions.php";
 require_once "funkcije.php";
 
+session_start();
+
+
 $show = true;
 
 
@@ -31,13 +34,5 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
 ?>
 
-<?php if($show): ?>
-<form method="POST" action="zamjena.php" enctype="multipart/form-data">
-    <label>
-        <input type="file" name="ulaz">
-    </label>
-    <input type="submit" value="send">
-</form>
-<a href="index.php">&lt;Povratak</a>
-<?php endif; ?>
 
+<?= render('zamjena_template.php', 'Zamjena', $show); ?>
