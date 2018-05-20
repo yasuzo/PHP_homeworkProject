@@ -4,7 +4,7 @@ require_once "helper_functions.php";
 require_once "funkcije.php";
 
 session_start();
-
+ob_start();
 
 $show = true;
 
@@ -23,6 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $show = false;
                 header("Content-Type: application/html");
                 header("Content-Disposition: attachment; filename='transformirani.html'");
+                ob_end_clean();
                 echo $data;
             }
         }
@@ -31,5 +32,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
 ?>
 
-
-<?= render('zamjena_template.php', 'Zamjena', $show); ?>
+<?php if($show): ?>
+<?= render('zamjena_template.php', 'Zamjena'); ?>
+<?php endif; ?>

@@ -45,8 +45,10 @@ function addSpaceAfter(string &$string, string $chars): int{
 }
 
 function normalizeTelephoneNumber(string &$string): int{
+    // radi za sve hrvatske pozivne brojeve
+    /* $prefixRegex = '(?<=^| )((?>0|\+385)(?:1|2[0-3]|3[1-5]|4[02-47-9]|5[123]|976|9[125789]|6[012459]|7[24567]|80[01]))'; */
 
-    $prefixRegex = '(?<=^| )((?>0|\+385)(?:1|2[0-3]|3[1-5]|4[02-47-9]|5[123]|976|9[125789]|6[012459]|7[24567]|80[01]))';
+    $prefixRegex = '(?<=^| )((?>0|\+385)(?:1|2[0-3]|3[1-5]|4[02-47-9]|5[123]))';
     $suffixRegex = '(?= |$|[\?\!\.])';
     $regex = [
         '/'.$prefixRegex.'[\/\-\.]?(\d{4})[\/\-\.]?(\d{3})'.$suffixRegex.'/',

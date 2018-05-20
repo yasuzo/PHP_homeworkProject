@@ -20,6 +20,8 @@ if(isset($_SESSION['user'])){
     die();
 }
 
+ob_start();
+
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -27,6 +29,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         send_message("Greska - Poslan je array!");
     }else{
         if(credentials_ok($username, $password, 'baza.json')){
+            ob_end_clean();
             $_SESSION['user'] = $username;
             header('Location: '.($_SESSION['lastPage'] ?? 'index.php'));
             die();

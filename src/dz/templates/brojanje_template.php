@@ -16,5 +16,3 @@
 </form>
 
 <?php endif; ?>
-
-<a href="index.php">&lt;Povratak</a>

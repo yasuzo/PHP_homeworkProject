@@ -10,6 +10,7 @@ if(isset($_SESSION['user'])){
     die();
 }
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    ob_start();
     $username = $_POST['username'] ?? '';
     $pass1 = $_POST['pass1'] ?? '';
     $pass2 = $_POST['pass2'] ?? '';
@@ -28,6 +29,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 send_message($val);
             }
         }else{
+            ob_end_clean();
             $pass1 = password_hash($pass1, PASSWORD_BCRYPT);
             add_to_json_file($username, $pass1, 'baza.json');
             $_SESSION['user'] = $username;

@@ -6,5 +6,3 @@
     <input type="submit" value="send" name="submitButton">
 </form>
 <?php endif; ?>
-
-<a href="index.php">&lt;Povratak</a>
