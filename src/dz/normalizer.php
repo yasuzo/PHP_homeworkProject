@@ -69,7 +69,7 @@ function normalizeTelephoneNumber(string &$string): int{
     return $count;
 }
 
-function normalizeEverything(string &$string): int {
+function normalize(string &$string): int {
     $count = trimSpaces($string);
     $count += normalizeTelephoneNumber($string);
     $count += date_to_YMD($string);
