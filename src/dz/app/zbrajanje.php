@@ -2,7 +2,7 @@
 require_once "helper_functions.php";
 require_once "funkcije.php";
 
-session_start();
+
 
 $show = true;
 $ulaz = $_GET['ulaz'] ?? '';

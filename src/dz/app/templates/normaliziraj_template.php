@@ -1,5 +1,5 @@
 <?php if($args[0]): ?>
-<form action="normaliziraj.php" method="post">
+<form action="?controller=normaliziraj" method="post">
     <textarea name="ulaz" cols="30" rows="10"></textarea>
     <input type="submit" value="Send">
 </form>

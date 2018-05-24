@@ -1,4 +1,4 @@
-<form action="registracija.php" method="post">
+<form action="?controller=registracija" method="post">
         <label for="username">Korisnicko ime:</label>
         <input type="text" name="username">
         <label for="pass1">Lozinka:</label>

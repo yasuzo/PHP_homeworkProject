@@ -1,5 +1,5 @@
 
-<form method="POST" action="zamjena.php" enctype="multipart/form-data">
+<form method="POST" action="?controller=zamjena" enctype="multipart/form-data">
     <label>
         <input type="file" name="ulaz">
     </label>

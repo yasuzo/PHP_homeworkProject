@@ -1,6 +1,6 @@
 <?php if($args[0]): ?>
 
-<form action="brojanje.php">
+<form>
     <label>Ulaz:
         <input type="text" name="ulaz" value="<?= safe($args[1])?>">
     </label>
@@ -12,6 +12,7 @@
     <label>Broji:
         <input type="text" name="broji" value="<?= safe($args[3])?>">
     </label>
+    <input type="hidden" name="controller" value="brojanje">
     <input type="submit" value="send" name="submitButton">
 </form>
 

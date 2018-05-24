@@ -73,12 +73,12 @@ function is_authenticated(): bool{
 
 function render(string $template, string $title, ...$args): void {
     $buffer = ob_get_clean();
-    $template = '/app/src/dz/templates/'.$template;
-    require_once './templates/layouts/layout.php';
+    $template = '/app/src/dz/app/templates/'.$template;
+    require_once '../app/templates/layouts/layout.php';
 }
 
-function get_scripts_name(): string {
-    $string = explode('/', $_SERVER['PHP_SELF']);
-    $string = array_pop($string);
+// mozda sam glup
+function get_scripts_name(string $path): string {
+    $string = basename($path, '.php');
     return $string;
 }

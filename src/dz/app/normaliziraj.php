@@ -1,7 +1,7 @@
 <?php
 require_once 'normalizer.php';
 require_once 'helper_functions.php';
-session_start();
+
 
 if(isset($_SESSION['user']) !== true){
     header('Location: prijava.php');

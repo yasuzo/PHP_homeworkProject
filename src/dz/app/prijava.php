@@ -3,7 +3,7 @@
 require_once 'helper_functions.php';
 require_once 'validation_helpers.php';
 
-session_start();
+
 
 if($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !== 'prijava.php'){
     $_SESSION['lastPage'] = $_SERVER['HTTP_REFERER'];

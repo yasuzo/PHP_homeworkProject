@@ -18,7 +18,7 @@ if(!empty($_GET['pic_name'])){
 ?>
 
 <?php if($dontShowHTML ?? true): ?>
-<form action="download_img.php" method="GET">
+<form action="?controller=download_img.php" method="GET">
     <label for="pic_name">Ime slike</label>
     <input type="text" name="pic_name">
     <input type="submit" value="send">

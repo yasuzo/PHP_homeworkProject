@@ -3,7 +3,7 @@
 require_once 'helper_functions.php';
 require_once 'validation_helpers.php';
 
-session_start();
+define('BAZA', '../data/baza.json');
 
 if(isset($_SESSION['user'])){
     header('Location: index.php');
@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }else{
         validate_username($username, $errors);
         validate_passwords($pass1, $pass2, $errors);
-        username_taken($username, 'baza.json', $errors);
+        username_taken($username, BAZA, $errors);
         if(empty($errors) === false){
             foreach($errors as $val){
                 send_message($val);
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         }else{
             ob_end_clean();
             $pass1 = password_hash($pass1, PASSWORD_BCRYPT);
-            add_to_json_file($username, $pass1, 'baza.json');
+            add_to_json_file($username, $pass1, BAZA);
             $_SESSION['user'] = $username;
             header('Location: index.php');
             die();
