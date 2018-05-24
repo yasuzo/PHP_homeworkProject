@@ -6,7 +6,6 @@
 </head>
 <body>
     <?php require_once '../app/helper_functions.php';
-        var_dump(is_authenticated());
         if(is_authenticated()): ?>
             <form action="?controller=prijava&odjavi-me" method="post">
                 <input type="submit" value="Odjava">
