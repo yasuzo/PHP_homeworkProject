@@ -1,9 +1,5 @@
 <?php
-require_once "helper_functions.php";
 require_once "funkcije.php";
-
-
-ob_start();
 
 $show = true;
 
@@ -11,9 +7,12 @@ $ulaz = $_GET['ulaz'] ?? '';
 $trazi = $_GET['trazi'] ?? '';
 $broji = $_GET['broji'] ?? '';
 
+$messages = [];
+
+
 // provjera je li bilo koji od ulaznih parametara proslijedjen kao array
 if(passed_value_is_array($ulaz, $trazi, $broji)){
-    send_message("Greska - pokusavate poslati array!");
+    $messages[] = "Greska - pokusavate poslati array!";
     $ulaz = '';
     $trazi = '';
     $broji = '';
@@ -21,19 +20,36 @@ if(passed_value_is_array($ulaz, $trazi, $broji)){
     $broji = explode(',', $broji);
     if(($rez = ponavljanje($ulaz, $trazi, ...$broji)) !== -1){
         // ako nema greske
-        send_message($rez);
+        $messages[] = $rez;
         $show = false;
     }else{
         if(is_empty($trazi, $broji = implode(',',$broji)))
-            send_message("Greska - parametri su prazni!");
+            $messages[] = "Greska - parametri su prazni!";
         else if(longer_than_one($trazi))
-            send_message("Greska - parametar Trazi ima vise od jednog znaka!");
+            $messages[] = "Greska - parametar Trazi ima vise od jednog znaka!";
         else
-            send_message("Greska - elementi u parametru broji moraju biti duljine jednog znaka!");
+            $messages[] = "Greska - elementi u parametru broji moraju biti duljine jednog znaka!";
     }
 }
 
 ?>
 
 
-<?= render('brojanje_template.php', 'Brojanje', $show, $ulaz, $trazi, $broji); ?>
+<?=
+$templatingEngine->render(
+    'layouts/layout.php', 
+    [ 
+        'title' => 'Brojanje', 
+        'body' => $templatingEngine->render(
+            'brojanje_template.php', 
+            [ 
+                'messages' => $messages,
+                'show' => $show,
+                'ulaz' => $ulaz, 
+                'trazi' => $trazi, 
+                'broji' => $broji
+            ]
+        )
+    ]
+);
+?>

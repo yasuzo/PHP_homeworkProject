@@ -1,8 +1,13 @@
-<?php if($args[0]): ?>
+<?php 
+    foreach ($messages as $message) {
+        send_message($message);
+    }
+?>
+<?php if($show): ?>
 <form action="?controller=normaliziraj" method="post">
     <textarea name="ulaz" cols="30" rows="10"></textarea>
     <input type="submit" value="Send">
 </form>
 <?php else: ?>
-    <?= safe($args[1]).'<br>Broj izmjena: '.$args[2]; ?>
+    <?= safe($output).'<br>Broj izmjena: '.$count; ?>
 <?php endif; ?>

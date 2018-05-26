@@ -3,6 +3,9 @@
 session_start();
 
 require_once "../app/helper_functions.php";
+require_once "../app/templating.php";
+
+$templatingEngine = new Templating('../app/templates/');
 
 switch($_GET['controller'] ?? 'index'){
     case 'prijava':

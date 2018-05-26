@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title><?=$title?></title>
+    <title><?= $title ?></title>
 </head>
 <body>
     <?php require_once '../app/helper_functions.php';
@@ -18,10 +18,8 @@
             <a href='?controller=registracija'><button>Registracija</button></a><br><br>
         <?php endif; ?>
     <?php endif; ?>
-
-    <?= $buffer ?>
-
-    <?php require_once $template; ?>
+    
+    <?= $body; ?>
 
     <?php if($title !== 'Index'): ?>
         <br><a href='?controller=index'>&lt;Natrag</a>
