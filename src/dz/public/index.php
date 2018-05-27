@@ -3,7 +3,7 @@
 session_start();
 
 require_once "../app/helper_functions.php";
-require_once "../app/templating.php";
+require_once "../app/classes/templating.php";
 
 $templatingEngine = new Templating('../app/templates/');
 
