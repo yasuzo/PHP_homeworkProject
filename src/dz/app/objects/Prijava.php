@@ -7,13 +7,15 @@ require_once '/app/src/dz/app/validation_helpers.php';
 class Prijava implements Controller{
     private $templatingEngine;
     private $session;
+    private $userRepository;
 
-    public function __construct(Templating $engine, Session $session){
+    public function __construct(Templating $engine, Session $session, UserRepository $userRepository){
         $this->templatingEngine = $engine;
         $this->session = $session;
+        $this->userRepository = $userRepository;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
 
         $messages = [];
         $post = $request->post();
@@ -25,23 +27,21 @@ class Prijava implements Controller{
 
         if(isset($get['odjavi-me']) && $request->method() === 'POST'){
             $this->session->logout();
-            header('Location: index.php');
-            die();
+            return new RedirectResponse('index.php');
         }
 
         if($this->session->isAuthenticated()){
-            header('Location: '.($this->session->getSessionProperty('lastPage') ?? 'index.php'));
-            die();
+            return new RedirectResponse($this->session->getSessionProperty('lastPage') ?? 'index.php');
         }
 
-
-        if($request->method() === 'POST'){
-            $username = $post['username'] ?? '';
-            $password = $post['password'] ?? '';
-            if(passed_value_is_array($username, $password)){
-                $messages[] = "Greska - Poslan je array!";
-            }else{
-                if(credentials_ok($username, $password, BAZA)){
+        try{
+            if($request->method() === 'POST'){
+                $username = $post['username'] ?? '';
+                $password = $post['password'] ?? '';
+                if(passed_value_is_array($username, $password)){
+                    throw new RuntimeException('Greska - Poslan je array!');
+                }
+                if($this->userRepository->credentialsOK($username, $password)){
                     $this->session->setSessionProperty('user', $username);
                     header('Location: '.($this->session->getSessionProperty('lastPage') ?? 'index.php'));
                     die();
@@ -49,9 +49,11 @@ class Prijava implements Controller{
                     $messages[] = "Username ili password nije ispravan!";
                 }
             }
+        }catch(Exception $e){
+            $messages[] = $e->getMessage();
         }
 
-        echo $this->templatingEngine->render(
+        $content = $this->templatingEngine->render(
             'layouts/layout.php', 
             [ 
                 'title' => 'Prijava',
@@ -64,6 +66,8 @@ class Prijava implements Controller{
                 )
             ]
         );
+
+        return new HTMLResponse($content);
     }
 }
 

@@ -14,7 +14,7 @@ class Registracija implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
         $messages = [];
         $post = $request->post();
 
@@ -29,10 +29,10 @@ class Registracija implements Controller{
 
             $errors = [];
 
-            if(passed_value_is_array($username, $pass1, $pass2)){
-                $messages[] = "Greska - Poslan je array!";
-                set_empty_string($username, $pass1, $pass2);
-            }else{
+            try{
+                if(passed_value_is_array($username, $pass1, $pass2)){
+                    throw new RuntimeException('Greska - Poslan je array!');
+                }
                 validate_username($username, $errors);
                 validate_passwords($pass1, $pass2, $errors);
                 username_taken($username, BAZA, $errors);
@@ -44,13 +44,14 @@ class Registracija implements Controller{
                     $pass1 = password_hash($pass1, PASSWORD_BCRYPT);
                     $this->userRepository->persist(new User($username, $pass1));
                     $this->session->setSessionProperty('user', $username);
-                    header('Location: index.php');
-                    die();
+                    return new RedirectResponse('index.php');
                 }
+            }catch(Exception $e){
+                $messages[] = $e->getMessage();
             }
         }
 
-        echo $this->templatingEngine->render(
+        $content = $this->templatingEngine->render(
             'layouts/layout.php', 
             [ 
                 'title' => 'Registracija',
@@ -63,5 +64,7 @@ class Registracija implements Controller{
                 )
             ]
         );
+
+        return new HTMLResponse($content);
     }
 }

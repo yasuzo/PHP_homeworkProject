@@ -11,33 +11,32 @@ class Zamjena implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
         $show = true;
         $files = $request->files();
 
         $messages = [];
 
-        if($request->method() === 'POST'){
-            if(isset($files['ulaz']) && UPLOAD_ERR_OK === $files['ulaz']['error']){
-                if($files['ulaz']['size'] > 1024){
-                    $messages[] = "Greska - datoteka prevelika!";
-                }else{
-                    $file = $files['ulaz'];
-                    if(($data=file_get_contents($file['tmp_name'])) === false)
-                        $messages[] = "Greska - nije moguće pročitati sadržaj datoteke!";
-                    else if(($data = transformiraj($data)) === null)
-                        $messages[] = "Greska - svi tagovi u datoteci moraju biti zatvoreni i moraju se zatvarati suprotno od onoga kako su se otvarali!";
-                    else{
-                        $show = false;
-                        header("Content-Type: application/html");
-                        header("Content-Disposition: attachment; filename='transformirani.html'");
+        try{
+            if($request->method() === 'POST'){
+                if(isset($files['ulaz']) && UPLOAD_ERR_OK === $files['ulaz']['error']){
+                    if($files['ulaz']['size'] > 1024){
+                        throw new FileTooLargeException('Greska - Datoteka prevelika!');
                     }
+                    $file = $files['ulaz'];
+                    if(($data=file_get_contents($file['tmp_name'])) === false){
+                        throw new UnableToOpenStreamException('Greska - Nije moguce procitati datoteku!');
+                    }
+                    $data = transformiraj($data);
+                    $show = false;
                 }
             }
+        }catch(Exception $e){
+            $messages[] = $e->getMessage();
         }
 
         if($show){
-            echo $this->templatingEngine->render('layouts/layout.php',
+            $content = $this->templatingEngine->render('layouts/layout.php',
                 [
                     'title' => 'Zamjena',
                     'authenticated' => $this->session->isAuthenticated(),
@@ -49,8 +48,10 @@ class Zamjena implements Controller{
                     )
                 ]
             );
+            return new HTMLResponse($content);
         }else{
-            echo $this->templatingEngine->render('zamjena_template.php', ['title' => 'Zamjena', 'show' => $show, 'data' => $data]);
+            $content = $this->templatingEngine->render('zamjena_template.php', ['title' => 'Zamjena', 'show' => $show, 'data' => $data]);
+            return new AttachmentResponse('transformirani.html', $content, 'application/html');
         }
     }
 }

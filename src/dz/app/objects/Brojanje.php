@@ -10,7 +10,7 @@ class Brojanje implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
         $show = true;
         $get = $request->get();
 
@@ -20,30 +20,25 @@ class Brojanje implements Controller{
 
         $messages = [];
 
-
-        // provjera je li bilo koji od ulaznih parametara proslijedjen kao array
-        if(passed_value_is_array($ulaz, $trazi, $broji)){
-            $messages[] = "Greska - pokusavate poslati array!";
-            $ulaz = '';
-            $trazi = '';
-            $broji = '';
-        }else if(isset($get['submitButton'])){
-            $broji = explode(',', $broji);
-            if(($rez = ponavljanje($ulaz, $trazi, ...$broji)) !== -1){
-                // ako nema greske
+        try{
+            if(passed_value_is_array($ulaz, $trazi, $broji)){
+                throw new RuntimeException('Greska - Poslan array!');
+            }
+            if(isset($get['submitButton'])){
+                $broji = explode(',', $broji);
+                $rez = ponavljanje($ulaz, $trazi, ...$broji);
                 $messages[] = $rez;
                 $show = false;
-            }else{
-                if(is_empty($trazi, $broji = implode(',',$broji)))
-                    $messages[] = "Greska - parametri su prazni!";
-                else if(longer_than_one($trazi))
-                    $messages[] = "Greska - parametar Trazi ima vise od jednog znaka!";
-                else
-                    $messages[] = "Greska - elementi u parametru broji moraju biti duljine jednog znaka!";
             }
+        }catch(InvalidArgumentValueException $e){
+            $messages[] = $e->getMessage();
+            $broji = implode(',', $broji);
+        }catch(RuntimeException $e){
+            $messages[] = $e->getMessage();
+            set_empty_string($broji, $ulaz, $trazi);
         }
 
-        echo $this->templatingEngine->render(
+        $content = $this->templatingEngine->render(
             'layouts/layout.php', 
             [ 
                 'title' => 'Brojanje', 
@@ -59,7 +54,9 @@ class Brojanje implements Controller{
                     ]
                 )
             ]
-        );    
+        );
+
+        return new HTMLResponse($content);
     }
 }
 

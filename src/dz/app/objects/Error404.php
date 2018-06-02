@@ -9,11 +9,13 @@ class Error404 implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
-        echo $this->templatingEngine->render('layouts/layout.php', [
+    public function handle(Request $request): Response{
+        $content = $this->templatingEngine->render('layouts/layout.php', [
             'title' => '404',
             'authenticated' => $this->session->isAuthenticated(),
             'body' => $this->templatingEngine->render('404_template.php', [])
         ]);
+
+        return new HTMLResponse($content);
     }
 }

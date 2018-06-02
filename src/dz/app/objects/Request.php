@@ -7,7 +7,7 @@ class Request{
     private $post;
     private $files;
 
-    public function __construct(string $method, string $httpReferer, array $get, array $post, array $files){
+    public function __construct(string $method, ?string $httpReferer, array $get, array $post, array $files){
         $this->method = $method;
         $this->httpReferer = $httpReferer;
         $this->get = $get;
@@ -19,7 +19,7 @@ class Request{
         return $this->method;
     }
 
-    public function httpReferer(): string{
+    public function httpReferer(): ?string{
         return $this->httpReferer;
     }
 

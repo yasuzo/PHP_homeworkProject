@@ -38,7 +38,7 @@ function passed_value_is_array(...$arr): bool {
 }
 
 // returns true on success and false on failure
-function add_to_json_file(array $data, string $jsonFile): bool{
+function add_to_json_file(array $data, string $jsonFile){
     if(is_file($jsonFile) === false){
         touch($jsonFile);
     }
@@ -47,24 +47,26 @@ function add_to_json_file(array $data, string $jsonFile): bool{
     $array[] = $data;
 
     $array = json_encode($array, JSON_PRETTY_PRINT);
-
-    return file_put_contents($jsonFile, $array) > 0 ? true : false;
+    if (file_put_contents($jsonFile, $array) === 0)
+        throw new PersistRuntimeException('Greska - Nije moguce spremiti podatak!');
 }
 
 // returns array decoded from json
 function read_json_file(string $jsonFile): ?array{
     $array = [];
     if(is_file($jsonFile) === true){
-        $array = file_get_contents($jsonFile);
+        $array = @file_get_contents($jsonFile);
+        if($array === false)
+            throw new UnableToOpenStreamException('Greska - Nije moguce procitati datoteku!');
         $array = json_decode($array, true);
     }
     return (array)$array;
 }
 
 function set_empty_string(&...$arr): void{
-    array_map(function($val): string{
-        return '';
-    }, $arr);
+    foreach($arr as &$val){
+        $val = '';
+    }
 }
 
 function is_authenticated(): bool{

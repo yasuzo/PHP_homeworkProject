@@ -6,18 +6,14 @@ define('BAZA', ROOT.'/data/baza.json');
 // AUTOLOAD
 require_once ROOT.'/app/autoload.php';
 
-
 require_once ROOT."/app/helper_functions.php";
-// require_once ROOT."/app/classes/Templating.php";
-// require_once ROOT."/app/main_services/Session.php";
-// require_once ROOT."/app/classes/UserRepository.php";
 
 $userRepository = new UserRepository(BAZA);
 $templatingEngine = new Templating(ROOT.'/app/templates/');
 $session = new Session();
 $request = new Request(
     $_SERVER['REQUEST_METHOD'], 
-    $_SERVER['HTTP_REFERER'], 
+    $_SERVER['HTTP_REFERER'] ?? null, 
     $_GET, 
     $_POST, 
     $_FILES
@@ -25,7 +21,7 @@ $request = new Request(
 
 switch($_GET['controller'] ?? 'index'){
     case 'prijava':
-        $controller = new Prijava($templatingEngine, $session);
+        $controller = new Prijava($templatingEngine, $session, $userRepository);
         break;
     case 'registracija':
         $controller = new Registracija($templatingEngine, $session, $userRepository);
@@ -49,10 +45,5 @@ switch($_GET['controller'] ?? 'index'){
         $controller = new Error404($templatingEngine, $session);
 }
 
-$controller->handle($request);
-
-// try{
-//     throw new PersistRuntimeException(1);
-// }catch(Exception $e){
-//     echo $e->getMessage();
-// }
+$respose = $controller->handle($request);
+$respose->send();

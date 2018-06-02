@@ -9,8 +9,8 @@ class Index implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
-        echo $this->templatingEngine->render(
+    public function handle(Request $request): Response{
+        $content = $this->templatingEngine->render(
             'layouts/layout.php', 
             [ 
                 'title' => 'Index',
@@ -18,5 +18,7 @@ class Index implements Controller{
                 'body' => $this->templatingEngine->render('index_template.php', [])
             ]
         );
+
+        return new HTMLResponse($content);
     }
 }

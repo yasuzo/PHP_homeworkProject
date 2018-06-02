@@ -11,27 +11,30 @@ class Zbrajanje implements Controller {
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
         $messages = [];
         $get = $request->get();
 
         $show = true;
         $ulaz = $get['ulaz'] ?? '';
 
-        if(passed_value_is_array($ulaz)){
-            $ulaz = "";
-            $messages[] = "Greska - proslijeđen je array!";
-        }else if(isset($get['submitButton'])){
-            if(($rez = zbroji($ulaz)) !== -1){
+        try{
+            if(passed_value_is_array($ulaz)){
+                throw new TypeError();
+            }
+            if(isset($get['submitButton'])){
+                $rez = zbroji($ulaz);
                 $messages[] = $rez;
                 $show = false;
-            }else if(empty($ulaz))
-                $messages[] = "Greska - ulazni parametar je prazan!";
-            else
-                $messages[] = "Greska - broj mora biti >= 0 i cijeli, bez ikakvih posebnih znakova!";
+            }
+        }catch(TypeError $e){
+            $ulaz = '';
+            $messages[] = "Greska - proslijeđen je array!";
+        }catch(InvalidArgumentValueException $e){
+            $messages[] = $e->getMessage();
         }
 
-        echo $this->templatingEngine->render('layouts/layout.php',
+        $content = $this->templatingEngine->render('layouts/layout.php',
             [
                 'title' => 'Zbrajanje',
                 'authenticated' => $this->session->isAuthenticated(),
@@ -43,7 +46,9 @@ class Zbrajanje implements Controller {
                     ]
                 )
             ]
-        ); 
+        );
+
+        return new HTMLResponse($content);
     }
 }
 

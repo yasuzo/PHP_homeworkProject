@@ -1,6 +1,7 @@
 <?php
 
+declare(strict_types=1);
+function thrw(string $s){
+}
 
-$a = new A();
-
-var_dump($a->p(1));
+// var_dump($a->p(1));

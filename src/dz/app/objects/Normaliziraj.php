@@ -10,27 +10,26 @@ class Normaliziraj implements Controller{
         $this->session = $session;
     }
 
-    public function handle(Request $request): void{
+    public function handle(Request $request): Response{
         $messages = [];
         $post = $request->post();
 
         if($this->session->isAuthenticated() === false){
-            header('Location: index.php?controller=prijava');
-            die();
+            return new RedirectResponse('index.php?controller=prijava');
         }
         $showForm = true;
 
         if($request->method() === 'POST'){
             $ulaz = $post['ulaz'] ?? '';
-            if(is_array($ulaz)){
-                $messages[] = "Greska - poslan je array!";
-            }else{
-                $showForm = false;
+            try{
                 $count = normalize($ulaz);
+                $showForm = false;
+            }catch(TypeError $e){
+                $messages[] = "Greska - poslan je array!";
             }
         }
 
-        echo $this->templatingEngine->render(
+        $content = $this->templatingEngine->render(
             'layouts/layout.php', 
             [ 
                 'title' => 'Normaliziraj',
@@ -46,6 +45,8 @@ class Normaliziraj implements Controller{
                 )
             ]
         );
+
+        return new HTMLResponse($content);
     }
 }
 

@@ -1,38 +1,12 @@
 <?php
-declare(strict_types=1);
-namespace abeceda;
+// declare(strict_types=1);
+require_once 'c.php';
 
-function pathFromFqn(string $fqn): string {
-    return __DIR__ . DIRECTORY_SEPARATOR
-        . 'autoload' . DIRECTORY_SEPARATOR
-        . str_replace(
-            '\\', DIRECTORY_SEPARATOR, $fqn
-        ) . '.php';
-}
+// $string = $a->p(1);
 
-function isFileNotAccessible(string $path): bool {
-    return !is_file($path)
-        ||
-        !is_readable($path);
-}
+// var_dump($string);
 
-spl_autoload_register(
-    function (string $fqn) {
-        $path = pathFromFqn($fqn);
 
-        if (isFileNotAccessible($path)) {
-            return ;
-        }
+$a = ['adaaf'];
 
-        (function (string $path) {
-            require_once $path;
-        })($path);
-    }
-);
-
-$a = new \A();
-
-$string = $a->p(1);
-
-var_dump($string);
 var_dump(__DIR__);
