@@ -41,10 +41,12 @@ function username_exists(string $username, string $baza): bool{
     if(is_file($baza) === false){
         return false;
     }
-    
+
     $array = read_json_file($baza);
 
-    return array_key_exists($username, $array);
+    $array = array_column($array, 'username');
+
+    return in_array($username, $array);
 }
 
 function credentials_ok(string $username, string $password, string $baza): bool{
@@ -53,5 +55,6 @@ function credentials_ok(string $username, string $password, string $baza): bool{
     }
     $korisnici = read_json_file($baza);
 
-    return password_verify($password, $korisnici[$username]);
+
+    return password_verify($password, ((new UserRepository('/app/src/dz/data/baza.json'))->findByUsername($username))['password']); // PROMJENI!!
 }

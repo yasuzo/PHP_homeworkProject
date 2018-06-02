@@ -15,23 +15,29 @@ function removeLastSpace(string &$string): int{
 }
 
 function date_to_YMD(string &$string): int{
-    $regex = '/(?<=\s)(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[012])\.(\d{4})(?=\s)/';
+    $suffixRegex = '(?= |$|[\?\!\.\,])';
+    $regex = '/(?<=\s|^)(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[012])\.(\d{4})'.$suffixRegex.'/';
     $string = preg_replace($regex, '${3}-${2}-${1}', $string, -1, $count);
     return $count;
 }
 
 function formatDate_YMD(string &$string): int{
+    $suffixRegex = '(?= |$|[\?\!\.\,])';
     $regex = [
-        '/(?<=\s\d{4}\-)(?=[1-9]\-(?:[1-9]|[12]\d|3[01])(?=\s))/',    // trazi '' nakon prve '-' u datumu gdje je samo jedna brojka
-        '/(?<=\s\d{4}\-(?:0[1-9]|1[012])\-)(?=[1-9](?=\s))/'        // trazi '' nakon druge '-' u datumu gdje je samo jedno brojka
+        '/(?<=^\d{4}\-)(?=[1-9]\-(?:[1-9]|[12]\d|3[01])'.$suffixRegex.')/',    // trazi '' nakon prve '-' u datumu gdje je samo jedna brojka
+        '/(?<=^\d{4}\-(?:0[1-9]|1[012])\-)(?=[1-9]'.$suffixRegex.')/',     // trazi '' nakon druge '-' u datumu gdje je samo jedno brojka
+        '/(?<=\s\d{4}\-)(?=[1-9]\-(?:[1-9]|[12]\d|3[01])'.$suffixRegex.')/',    // trazi '' nakon prve '-' u datumu gdje je samo jedna brojka
+        '/(?<=\s\d{4}\-(?:0[1-9]|1[012])\-)(?=[1-9]'.$suffixRegex.')/'
     ]; 
-    $replacements = ['0', '0'];
+    $replacements = ['0', '0', '0', '0'];
     $string = preg_replace($regex, $replacements, $string, -1, $count);
     return $count;
 }
 
 function date_from_YMD_to_standard(string &$string): int{
-    $regex = '/(?<=\s)(\d{4})\-(0[1-9]|1[012])\-(0[1-9]|[12]\d|3[01])(?=\s)/';
+    $prefixRegex = '(?<=^|\s)';
+    $suffixRegex = '(?= |$|[\?\!\.\,])';
+    $regex = '/'.$prefixRegex.'(\d{4})\-(0[1-9]|1[012])\-(0[1-9]|[12]\d|3[01])'.$suffixRegex.'/';
     $string = preg_replace($regex, '${3}.${2}.${1}', $string, -1, $count);
     return $count;
 }
@@ -49,7 +55,7 @@ function normalizeTelephoneNumber(string &$string): int{
     /* $prefixRegex = '(?<=^| )((?>0|\+385)(?:1|2[0-3]|3[1-5]|4[02-47-9]|5[123]|976|9[125789]|6[012459]|7[24567]|80[01]))'; */
 
     $prefixRegex = '(?<=^| )((?>0|\+385)(?:1|2[0-3]|3[1-5]|4[02-47-9]|5[123]))';
-    $suffixRegex = '(?= |$|[\?\!\.])';
+    $suffixRegex = '(?= |$|[\?\!\.\,])';
     $regex = [
         '/'.$prefixRegex.'[\/\-\.]?(\d{4})[\/\-\.]?(\d{3})'.$suffixRegex.'/',
         '/'.$prefixRegex.'[\/\-\.]?(\d{3})[\/\-\.]?(\d)(\d{3})'.$suffixRegex.'/',

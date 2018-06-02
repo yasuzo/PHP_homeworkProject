@@ -1,36 +1,58 @@
-<?php 
+<?php
 
-session_start();
+define('ROOT', '/app/src/dz');
+define('BAZA', ROOT.'/data/baza.json');
 
-require_once "../app/helper_functions.php";
-require_once "../app/classes/templating.php";
+// AUTOLOAD
+require_once ROOT.'/app/autoload.php';
 
-$templatingEngine = new Templating('../app/templates/');
+
+require_once ROOT."/app/helper_functions.php";
+// require_once ROOT."/app/classes/Templating.php";
+// require_once ROOT."/app/main_services/Session.php";
+// require_once ROOT."/app/classes/UserRepository.php";
+
+$userRepository = new UserRepository(BAZA);
+$templatingEngine = new Templating(ROOT.'/app/templates/');
+$session = new Session();
+$request = new Request(
+    $_SERVER['REQUEST_METHOD'], 
+    $_SERVER['HTTP_REFERER'], 
+    $_GET, 
+    $_POST, 
+    $_FILES
+);
 
 switch($_GET['controller'] ?? 'index'){
     case 'prijava':
-        $path = '../app/prijava.php';
+        $controller = new Prijava($templatingEngine, $session);
         break;
     case 'registracija':
-        $path = '../app/registracija.php';
+        $controller = new Registracija($templatingEngine, $session, $userRepository);
         break;
     case 'brojanje':
-        $path = '../app/brojanje.php';
+        $controller = new Brojanje($templatingEngine, $session);
         break;
     case 'zbrajanje':
-        $path = '../app/zbrajanje.php';
+        $controller = new Zbrajanje($templatingEngine, $session);
         break;
     case 'zamjena':
-        $path = '../app/zamjena.php';
+        $controller = new Zamjena($templatingEngine, $session);
         break;
     case 'normaliziraj':
-        $path = '../app/normaliziraj.php';
+        $controller = new Normaliziraj($templatingEngine, $session);
         break;
     case 'index':
-        $path = '../app/index.php';
+        $controller = new Index($templatingEngine, $session);
         break;
     default:
-        $path = '../app/404.php';
+        $controller = new Error404($templatingEngine, $session);
 }
 
-require_once $path;
+$controller->handle($request);
+
+// try{
+//     throw new PersistRuntimeException(1);
+// }catch(Exception $e){
+//     echo $e->getMessage();
+// }

@@ -13,7 +13,7 @@ class Templating{
         ob_start();
         
         extract($args);
-        
+
         require_once $this->templatesRoot.$file;
 
         return ob_get_clean();

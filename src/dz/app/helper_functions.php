@@ -38,13 +38,13 @@ function passed_value_is_array(...$arr): bool {
 }
 
 // returns true on success and false on failure
-function add_to_json_file(string $key, string $data, string $jsonFile): bool{
+function add_to_json_file(array $data, string $jsonFile): bool{
     if(is_file($jsonFile) === false){
         touch($jsonFile);
     }
     $array = read_json_file($jsonFile);
 
-    $array[$key] = $data;
+    $array[] = $data;
 
     $array = json_encode($array, JSON_PRETTY_PRINT);
 
@@ -56,7 +56,7 @@ function read_json_file(string $jsonFile): ?array{
     $array = [];
     if(is_file($jsonFile) === true){
         $array = file_get_contents($jsonFile);
-        $array = json_decode($array);
+        $array = json_decode($array, true);
     }
     return (array)$array;
 }
@@ -69,12 +69,6 @@ function set_empty_string(&...$arr): void{
 
 function is_authenticated(): bool{
     return isset($_SESSION['user']);
-}
-
-function render(string $template, string $title, ...$args): void {
-    $buffer = ob_get_clean();
-    $template = '/app/src/dz/app/templates/'.$template;
-    require_once '../app/templates/layouts/layout.php';
 }
 
 // mozda sam glup

@@ -5,8 +5,7 @@
     <title><?= $title ?></title>
 </head>
 <body>
-    <?php require_once '../app/helper_functions.php';
-        if(is_authenticated()): ?>
+    <?php if($authenticated): ?>
             <form action="?controller=prijava&odjavi-me" method="post">
                 <input type="submit" value="Odjava">
             </form>
