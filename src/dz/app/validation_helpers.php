@@ -9,7 +9,7 @@ define('MAX_LEN_USER', 24);
 
 
 function validate_username(string $username, array &$errors): bool{
-    $regex = "/^(?=[\w\-]*[a-zA-Z])[\w\-]{".MIN_LEN_USER.",".MAX_LEN_USER."}$/";
+    $regex = "/^(?=[\w\-]*[a-zA-Z\p{L}])[\w\-]{".MIN_LEN_USER.",".MAX_LEN_USER."}$/u";
     if((bool)preg_match($regex, $username) === false){
         array_push($errors, "Username nije valjan!");
         return false;
@@ -18,8 +18,7 @@ function validate_username(string $username, array &$errors): bool{
 }
 
 function validate_passwords(string $pass1, string $pass2, array &$errors): bool{
-    $regex = "/.{12,}/";
-    if((bool)preg_match($regex, $pass1) === false){
+    if(mb_strlen($pass1) < 12){
         array_push($errors, "Password nije valjan!");
         return false;
     }else if($pass1 !== $pass2){
