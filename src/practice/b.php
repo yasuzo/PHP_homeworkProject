@@ -6,7 +6,10 @@ require_once 'c.php';
 
 // var_dump($string);
 
-
 $a = ['adaaf'];
+
+
+http_response_code(500);
+
 
 var_dump(__DIR__);

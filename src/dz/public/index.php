@@ -45,5 +45,12 @@ switch($_GET['controller'] ?? 'index'){
         $controller = new Error404($templatingEngine, $session);
 }
 
-$respose = $controller->handle($request);
-$respose->send();
+try{
+    $respose = $controller->handle($request);
+    $respose->send();
+}catch(Throwable $e){
+    http_response_code(500);
+    $response = new HTMLResponse('Greska! '.$e->getMessage());
+    $response->send();
+}
+
