@@ -1,8 +1,5 @@
 <?php
 
-
-require_once '/app/src/dz/app/validation_helpers.php';
-
 class Registracija implements Controller{
     private $userRepository;
     private $templatingEngine;
@@ -19,8 +16,7 @@ class Registracija implements Controller{
         $post = $request->post();
 
         if($this->session->isAuthenticated()){
-            header('Location: index.php');
-            die();
+            return new RedirectResponse('index.php');
         }
         if($request->method() === 'POST'){
             $username = $post['username'] ?? '';
@@ -35,7 +31,7 @@ class Registracija implements Controller{
                 }
                 validate_username($username, $errors);
                 validate_passwords($pass1, $pass2, $errors);
-                username_taken($username, BAZA, $errors);
+                username_taken($username, $this->userRepository, $errors);
                 if(empty($errors) === false){
                     foreach($errors as $val){
                         $messages[] = $val;

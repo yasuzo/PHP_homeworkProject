@@ -1,9 +1,5 @@
 <?php
 
-require_once '/app/src/dz/app/validation_helpers.php';
-
-// define('BAZA', '../data/baza.json');
-
 class Prijava implements Controller{
     private $templatingEngine;
     private $session;

@@ -1,14 +1,16 @@
 <?php
 
 define('ROOT', '/app/src/dz');
-define('BAZA', ROOT.'/data/baza.json');
 
 // AUTOLOAD
 require_once ROOT.'/app/autoload.php';
 
-require_once ROOT."/app/helper_functions.php";
+require_once ROOT.'/app/baza.php';
 
-$userRepository = new UserRepository(BAZA);
+require_once ROOT."/app/helper_functions.php";
+require_once ROOT."/app/validation_helpers.php";
+
+$userRepository = new UserRepository($db);
 $templatingEngine = new Templating(ROOT.'/app/templates/');
 $session = new Session();
 $request = new Request(

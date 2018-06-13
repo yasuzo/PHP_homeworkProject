@@ -3,50 +3,44 @@
 class UserRepository{
     private $baza;
 
-    public function __construct(string $path){
-        $this->baza = $path;
-        return;
-    }
-    public function findUsers(): array{
-        $array = [];
-        if(is_file($this->baza) === true){
-            $array = @file_get_contents($this->baza);
-            if($array === false)
-                throw new UnableToOpenStreamException('Greska - Nije moguce procitati datoteku!');
-            $array = json_decode($array, true);
-        }
-        return (array)$array;
+    public function __construct(PDO $db){
+        $this->baza = $db;
+        $query = <<<SQL
+        CREATE TABLE IF NOT EXISTS users(
+            id          int not null AUTO_INCREMENT primary key,
+            username    varchar(40) not null unique,
+            pass        varchar(256) not null
+        );
+SQL;
+        $db->query($query);
     }
 
-    public function findByUsername(string $username): array{
-        $korisnici = $this->findUsers();
-        $key = array_search($username, array_column($korisnici, 'username'));
-        return $key === false ? [] : $korisnici[$key];
+    public function findByUsername(string $username): ?array{
+        $query = <<<SQL
+        select username, pass
+        from users
+        where username=:user;
+SQL;
+        $query = $this->baza->prepare($query);
+        $query->execute([':user' => $username]);
+        return $query->fetch() ?: null;
     }
 
     public function persist(User $user): void{
-        if(is_file($this->baza) === false){
-            touch($this->baza);
-        }
-        $array = $this->findUsers();
-
-        $data = ['username' => $user->username(), 'password' => $user->password()];
-    
-        $array[] = $data;
-    
-        $array = json_encode($array, JSON_PRETTY_PRINT);
-
-        if(@file_put_contents($this->baza, $array) === false)
-            throw new PersistRuntimeException('Greska - Nije moguce spremiti podatak!');
-        
-        return;
+        $query = <<<SQL
+        insert into users
+        (username, pass) values
+        (:user, :pass);
+SQL;
+        $query = $this->baza->prepare($query);
+        $query->execute([':user' => $user->username(), ':pass' => $user->password()]);
     }
 
     public function credentialsOK(string $username, string $password): bool{
-        if(empty($user = $this->findByUsername($username))){
+        if(($user = $this->findByUsername($username)) === null){
             return false;
         }
     
-        return password_verify($password, $user['password']);
+        return password_verify($password, $user['pass']);
     }
 }

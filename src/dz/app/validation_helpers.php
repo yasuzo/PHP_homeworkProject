@@ -28,8 +28,8 @@ function validate_passwords(string $pass1, string $pass2, array &$errors): bool{
     return true;
 }
 
-function username_taken(string $username, string $baza, array &$errors): bool{
-    if(empty((new UserRepository('/app/src/dz/data/baza.json'))->findByUsername($username)) === false){
+function username_taken(string $username, UserRepository $userRepository, array &$errors): bool{
+    if($userRepository->findByUsername($username) !== null){
         array_push($errors, "Username vec postoji!");
         return true;
     }
