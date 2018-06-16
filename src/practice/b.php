@@ -1,15 +1,15 @@
 <?php
-// declare(strict_types=1);
-require_once 'c.php';
-
-// $string = $a->p(1);
-
-// var_dump($string);
-
-$a = ['adaaf'];
+session_start();
 
 
-http_response_code(500);
+interface Firewall{}
 
+class SessionFirewall implements Firewall{
+    function __construct(){
+        var_dump(self::class);
+    }
+}
 
-var_dump(__DIR__);
+$object = new SessionFirewall();
+
+var_dump($_SERVER['HTTP_HTTP_BLJAK'] ?? 'Nema tokena');

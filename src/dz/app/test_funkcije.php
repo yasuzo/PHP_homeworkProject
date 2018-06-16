@@ -1,5 +1,6 @@
 <?php
 require_once 'funkcije.php';
+require_once 'autoload.php';
 
 // ponavljanje()
 
