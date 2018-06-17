@@ -5,14 +5,6 @@ class UserRepository{
 
     public function __construct(PDO $db){
         $this->baza = $db;
-        $query = <<<SQL
-        CREATE TABLE IF NOT EXISTS users(
-            id          int not null AUTO_INCREMENT primary key,
-            username    varchar(40) not null unique,
-            pass        varchar(256) not null
-        );
-SQL;
-        $db->query($query);
     }
 
     public function findByUsername(string $username): ?array{

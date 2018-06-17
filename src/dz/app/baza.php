@@ -1,6 +1,6 @@
 <?php
 try {
-    $dsn = 'mysql:host=oipa-db;charset=utf8';
+    $dsn = 'mysql:host=oipa-db;charset=utf8;dbname=bazaDZ';
     $db = new PDO(
         $dsn,
         'root',
@@ -12,6 +12,4 @@ try {
             PDO::ERRMODE_EXCEPTION
         ]
     );
-    $db->query('CREATE DATABASE IF NOT EXISTS `bazaDZ`');
-    $db->query('use `bazaDZ`');
 } catch (PDOException $e) { throw $e; }
